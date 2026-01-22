@@ -22,7 +22,7 @@ class UserManagementController extends Controller
     public function updateRole(Request $request, $id)
     {
         $request->validate([
-            'role' => 'required|in:admin,user'
+            'role' => 'required|in:admin,user,teamleader'
         ]);
 
         $user = User::findOrFail($id);

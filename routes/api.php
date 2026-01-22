@@ -14,6 +14,10 @@ use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\team\GroupChatController;
+use App\Http\Controllers\team\GroupController;
+use App\Http\Controllers\team\TeamTaskController;
+use App\Http\Controllers\team\TeamTaskReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +78,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 Route::get('/user-location/{id}', [LoginController::class, 'getLocationFromIp']);
 
 Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/attendances/{userId}/month', [AttendanceController::class, 'userAttendanceMonth']);
     Route::post('/salary/calculate',[SalaryController::class,'calculate']); // single user
     Route::post('/salary/calculate-active',[SalaryController::class,'calculateAllActive']); // all active users
     Route::post('/salary/update-status',[SalaryController::class,'updateStatusByMonth']); // mark paid/pending
@@ -128,6 +133,28 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // attendance count for user
     Route::get('/attendance/current-month-summary/user', [AttendanceController::class, 'currentMonthSummary']);
+});
+
+
+// team
+Route::middleware('auth:sanctum')->group(function(){
+     Route::get('/users', [UserManagementController::class, 'index']);
+
+    Route::get('/team-tasks',[TeamTaskController::class,'teamTasks']);
+    Route::post('/team-task/assign',[TeamTaskController::class,'assign']);
+    Route::get('/my-tasks',[TeamTaskController::class,'myTasks']);
+    Route::post('/my-task/{id}/status',[TeamTaskController::class,'updateStatus']);
+    Route::post('/team-report/submit',[TeamTaskReportController::class,'submit']);
+    Route::get('/team-reports',[TeamTaskReportController::class,'teamReports']);
+    Route::get('/group-chat/{id}/messages',[GroupChatController::class,'messages']);
+    Route::post('/group-chat/{id}/message',[GroupChatController::class,'send']);
+    Route::post('/group/create',[GroupController::class,'create']);
+    Route::get('/group/my-groups',[GroupController::class,'myGroups']);
+    Route::post('/group/{groupId}/add-member',[GroupController::class,'addMember']);
+    Route::post('/group/{groupId}/remove-member', [GroupController::class, 'removeMember']);
+    Route::delete('/group/{groupId}', [GroupController::class, 'delete']);
+
+
 });
 
 

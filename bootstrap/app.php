@@ -9,9 +9,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Console\Scheduling\Schedule;
 
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST,GET,OPTIONS,PUT,DELETE');
-header('Access-Control-Allow-Headers: Content-Type,X-Auth-Token, Origin,Authorization');
+// header('Access-Control-Allow-Origin: *');
+// header('Access-Control-Allow-Methods: POST,GET,OPTIONS,PUT,DELETE');
+// header('Access-Control-Allow-Headers: Content-Type,X-Auth-Token, Origin,Authorization');
 
 
 return Application::configure(basePath: dirname(__DIR__))

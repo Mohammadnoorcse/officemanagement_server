@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-    // Admin user
+    // // Admin user
         User::create([
             'name' => 'Admin User',
             'email' => 'admin@gmail.com',
@@ -27,16 +27,16 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Normal users
-        User::create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => Hash::make('admin01'),
-        ]);
+        // User::create([
+        //     'name' => 'John Doe',
+        //     'email' => 'john@example.com',
+        //     'password' => Hash::make('admin01'),
+        // ]);
 
-        User::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
-            'password' => Hash::make('admin01'),
-        ]);
+        // User::create([
+        //     'name' => 'Jane Smith',
+        //     'email' => 'jane@example.com',
+        //     'password' => Hash::make('admin01'),
+        // ]);
     }
 }

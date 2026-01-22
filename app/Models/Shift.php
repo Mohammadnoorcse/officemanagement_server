@@ -6,18 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Shift extends Model
 {
-       protected $fillable = [
+      protected $fillable = [
         'user_id',
-        'name',       // matches migration
+        'name',
         'date',
+        'day_of_week',
         'start_time',
         'end_time',
-        'status',     // optional if you want to allow mass update
+        'status',
     ];
-
     // Relationship with User
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    public function attendances() {
+        return $this->hasMany(Attendance::class);
+    }
+
 }

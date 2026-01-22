@@ -97,32 +97,37 @@ public function login(Request $request)
         return $this->loginSuccess($token, $user);
     }
 
-    // 5. Current time (Bangladesh)
+    // 5. Current time in Bangladesh
     $currentTime = Carbon::now('Asia/Dhaka');
-    $today = $currentTime->toDateString(); // "YYYY-MM-DD"
+    $todayDate = $currentTime->toDateString();
+    $todayDay = strtolower($currentTime->format('l')); // sunday, monday...
 
     // 6. Get today's shift
-    $shift = Shift::where('user_id', $user->id)->whereDate('date', '<=', $today)->first();
+    $shift = Shift::where('user_id', $user->id)
+        ->where(function ($q) use ($todayDate, $todayDay) {
+            $q->whereDate('date', $todayDate)
+              ->orWhere('day_of_week', $todayDay);
+        })
+        ->first();
 
     if (!$shift) {
         return response()->json(['message' => 'You have no shift assigned for today'], 403);
-        // return $today;
     }
 
-    // 7. Shift start and end times
-    $shiftStart = Carbon::createFromFormat('Y-m-d H:i:s', $today . ' ' . $shift->start_time, 'Asia/Dhaka');
-    $shiftEnd   = Carbon::createFromFormat('Y-m-d H:i:s', $today . ' ' . $shift->end_time, 'Asia/Dhaka');
+    // 7. Parse shift times safely
+    try {
+        $shiftStart = Carbon::parse($todayDate . ' ' . $shift->start_time, 'Asia/Dhaka');
+        $shiftEnd   = Carbon::parse($todayDate . ' ' . $shift->end_time, 'Asia/Dhaka');
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Invalid shift time format'], 500);
+    }
 
-    // 8. Overnight shift (end < start)
+    // 8. Handle overnight shifts (end < start)
     if ($shiftEnd->lt($shiftStart)) {
         $shiftEnd->addDay();
     }
 
     // 9. Check if within shift time
-    // if ($currentTime->lt($shiftStart)) {
-    //     return response()->json(['message' => 'Your shift has not started yet.',$currentTime,$shiftStart], 403);
-    // }
-
     if ($currentTime->gt($shiftEnd)) {
         return response()->json(['message' => 'Your shift time is over. You cannot login now.'], 403);
     }
@@ -132,7 +137,7 @@ public function login(Request $request)
 
     // 11. Prevent duplicate attendance
     $existing = Attendance::where('user_id', $user->id)
-        ->where('date', $today)
+        ->where('date', $todayDate)
         ->first();
 
     if ($existing) {
@@ -147,7 +152,7 @@ public function login(Request $request)
     Attendance::create([
         'user_id'      => $user->id,
         'shift_id'     => $shift->id,
-        'date'         => $today,
+        'date'         => $todayDate,
         'login_time'   => $currentTime,
         'ip'           => $ip,
         'country'      => $location->countryName ?? null,
