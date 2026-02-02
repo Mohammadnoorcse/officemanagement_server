@@ -111,4 +111,20 @@ public function removeMember(Request $request, $groupId)
         'group' => $group->load('members')
     ]);
 }
+
+public function myGroupMembers()
+{
+    $user = auth()->user();
+
+    // Get groups where the user is a member OR created_by the user
+    $groups = Group::where('created_by', $user->id)
+        ->orWhereHas('members', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
+        ->with('members:id,name,role') // load only needed fields
+        ->get();
+
+    return response()->json($groups);
+}
+
 }

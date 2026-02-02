@@ -71,6 +71,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/attendances/{userId}/month', [AttendanceController::class, 'userAttendanceMonth']);
     Route::get('/attendances/{userId}/download/{month}', [AttendanceController::class, 'downloadMonthXML']);
     Route::get('/attendance/today-summary', [AttendanceController::class, 'todaySummary']);
+    Route::get('/month-matrix', [AttendanceController::class, 'monthMatrix']);
 
 
 });
@@ -142,6 +143,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::get('/team-tasks',[TeamTaskController::class,'teamTasks']);
     Route::post('/team-task/assign',[TeamTaskController::class,'assign']);
+    Route::get('/group/members', [GroupController::class, 'myGroupMembers']);
+
     Route::get('/my-tasks',[TeamTaskController::class,'myTasks']);
     Route::post('/my-task/{id}/status',[TeamTaskController::class,'updateStatus']);
     Route::post('/team-report/submit',[TeamTaskReportController::class,'submit']);
@@ -152,7 +155,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/group/my-groups',[GroupController::class,'myGroups']);
     Route::post('/group/{groupId}/add-member',[GroupController::class,'addMember']);
     Route::post('/group/{groupId}/remove-member', [GroupController::class, 'removeMember']);
+
     Route::delete('/group/{groupId}', [GroupController::class, 'delete']);
+
 
 
 });

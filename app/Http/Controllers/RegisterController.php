@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Password;
 
 class RegisterController extends Controller
 {
-   
+
 
    public function register(Request $request)
     {
@@ -17,7 +17,7 @@ class RegisterController extends Controller
             'name'       => 'required|string|max:255',
             'email'      => 'required|email|unique:users,email',
             'password'   => ['required', 'confirmed'],
-            'role'       => 'nullable|in:user,admin,teamleader',
+           'role' => 'nullable|in:user,admin,teamleader',
             'department' => 'nullable|string|max:255',
             'salary'     => 'nullable|numeric|min:0',
             'status'     => 'nullable|in:active,inactive',
